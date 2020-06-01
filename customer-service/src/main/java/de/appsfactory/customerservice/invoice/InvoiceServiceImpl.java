@@ -3,18 +3,14 @@ package de.appsfactory.customerservice.invoice;
 import de.appsfactory.customerservice.customer.Customer;
 import de.appsfactory.customerservice.customer.CustomerRepository;
 import de.appsfactory.customerservice.utils.NullAwareBeansUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class InvoiceServiceImpl implements InvoiceService {
-
-    private final static Logger log = LoggerFactory.getLogger(InvoiceServiceImpl.class);
 
     private final NullAwareBeansUtil<Invoice> invoiceNullAwareBeansUtil;
     private final CustomerRepository customerRepository;
@@ -38,7 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public void createInvoice(Long customerId, Invoice invoice) {
+    public Invoice createInvoice(Long customerId, Invoice invoice) {
         if (customerId == null) {
             log.error("customer id not found");
             throw new IllegalArgumentException("customer id not found");
@@ -47,7 +43,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (customerOptional.isPresent()) {
             Customer customer = customerOptional.get();
             invoice.setCustomer(customer);
-            invoiceRepository.saveAndFlush(invoice);
+            return invoiceRepository.saveAndFlush(invoice);
         } else {
             log.error("customer not found:"+customerId);
             throw new IllegalStateException("customer not found:"+customerId);
@@ -55,14 +51,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public void updateInvoice(Invoice invoice) {
+    public Invoice updateInvoice(Invoice invoice) {
         Optional<Invoice> optionalInvoice = invoiceRepository.findById(invoice.getId());
         if (optionalInvoice.isPresent()) {
             Invoice existingInvoice = optionalInvoice.get();
-            invoiceRepository.saveAndFlush(invoiceNullAwareBeansUtil.copyNonNullProperties(existingInvoice, invoice));
+            return invoiceRepository.saveAndFlush(invoiceNullAwareBeansUtil.copyNonNullProperties(existingInvoice, invoice));
         } else {
-            log.error("invoice not found:"+invoice.toString());
-            throw new IllegalStateException("customer not found:"+invoice.toString());
+            log.error("invoice not found:"+invoice);
+            throw new IllegalStateException("customer not found:{}"+invoice);
         }
     }
 

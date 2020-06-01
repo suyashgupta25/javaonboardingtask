@@ -1,16 +1,15 @@
 package de.appsfactory.customerservice.customer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.appsfactory.customerservice.error.exception.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class CustomerServiceImpl implements CustomerService {
-
-    private final static Logger log = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     private final CustomerRepository customerRepository;
 
@@ -20,8 +19,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer findUserByEmail(String email) {
-        Optional<Customer> user = Optional.ofNullable(customerRepository.findByEmail(email));
-        return user.orElse(null);
+        Optional<Customer> customer = Optional.ofNullable(customerRepository.findByEmail(email));
+        if (customer.isPresent()) {
+            return customer.get();
+        } else {
+            throw new EntityNotFoundException(Customer.class, "email", email);
+        }
     }
 
     @Override
@@ -35,24 +38,29 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void createCustomer(Customer customer) {
-        customerRepository.saveAndFlush(customer);
+    public Customer createCustomer(Customer customer) {
+        return customerRepository.saveAndFlush(customer);
     }
 
     @Override
-    public void updateCustomer(Customer customer) {
+    public Customer updateCustomer(Customer customer) {
         if (customer.getId() == null) {
-            log.error("customer id not found="+customer.toString());
-            throw new IllegalArgumentException("customer id not found");
+            log.error("customer id not found={}"+customer);
+            throw new EntityNotFoundException(Customer.class, "id", "null");
         }
-        customerRepository.saveAndFlush(customer);
+        Customer updatedCustomer = customerRepository.saveAndFlush(customer);
+        if (updatedCustomer == null) {
+            log.error("customer not found for id="+customer.getId());
+            throw new EntityNotFoundException(Customer.class, "id", customer.getId());
+        }
+        return updatedCustomer;
     }
 
     @Override
     public void deleteCustomer(Long id) {
         if (id == null) {
             log.error("id not found");
-            throw new IllegalArgumentException("id not found");
+            throw new EntityNotFoundException(Customer.class, "id", "null");
         }
         customerRepository.deleteById(id);
     }

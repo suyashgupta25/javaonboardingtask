@@ -4,9 +4,9 @@ public interface InvoiceService {
 
     Invoice findInvoicesById(Long id);
 
-    void createInvoice(Long customerId, Invoice invoice);
+    Invoice createInvoice(Long customerId, Invoice invoice);
 
-    void updateInvoice(Invoice invoice);
+    Invoice updateInvoice(Invoice invoice);
 
     void deleteInvoice(Long id);
 }

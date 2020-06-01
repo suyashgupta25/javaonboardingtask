@@ -10,9 +10,9 @@ public interface CustomerService {
 
     List<Customer> allCustomers();
 
-    void createCustomer(Customer customer);
+    Customer createCustomer(Customer customer);
 
-    void updateCustomer(Customer customer);
+    Customer updateCustomer(Customer customer);
 
     void deleteCustomer(Long id);
 }

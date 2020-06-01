@@ -1,15 +1,13 @@
 package de.appsfactory.customerservice.invoice;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
+@Slf4j
 @RestController
 public class InvoiceController {
-
-    private final static Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
     private final InvoiceService invoiceService;
 
@@ -24,24 +22,21 @@ public class InvoiceController {
     }
 
     @PostMapping("/invoice/{id}")
-    public String createInvoice(@RequestBody Invoice invoice, @PathVariable Long id){
-        log.debug("creating Invoice="+invoice.toString());
-        invoiceService.createInvoice(id, invoice);
-        return "Created successfully";
+    public Invoice createInvoice(@RequestBody @Valid Invoice invoice, @PathVariable Long id){
+        log.debug("creating Invoice={}"+invoice);
+        return invoiceService.createInvoice(id, invoice);
     }
 
     @RequestMapping(value = "/invoice", method = RequestMethod.PUT)
-    public String updateInvoice(@RequestBody Invoice invoice){
-        log.debug("updating Customer="+invoice.toString());
-        invoiceService.updateInvoice(invoice);
-        return "Updated successfully";
+    public Invoice updateInvoice(@RequestBody @Valid Invoice invoice){
+        log.debug("updating Customer={}"+invoice);
+        return invoiceService.updateInvoice(invoice);
     }
 
     @RequestMapping(value = "/invoice/{id}", method = RequestMethod.DELETE)
-    public String deleteInvoice(@PathVariable Long id){
+    public void deleteInvoice(@PathVariable Long id){
         log.debug("deleting Customer");
         invoiceService.deleteInvoice(id);
-        return "Deleted successfully";
     }
 
 }
