@@ -1,18 +1,20 @@
 package de.appsfactory.customerservice.customer;
 
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 
 public interface CustomerService {
 
-    Customer findUserByEmail(String email);
+    ResponseEntity<Customer> findUserByEmail(String email);
 
-    Customer findCustomer(Long id);
+    ResponseEntity<Customer> findCustomer(Long id);
 
-    List<Customer> allCustomers();
+    ResponseEntity<List<Customer>> allCustomers();
 
-    void createCustomer(Customer customer);
+    ResponseEntity<Customer> createCustomer(Customer customer);
 
-    void updateCustomer(Customer customer);
+    ResponseEntity<Customer> updateCustomer(Customer customer);
 
     void deleteCustomer(Long id);
 }

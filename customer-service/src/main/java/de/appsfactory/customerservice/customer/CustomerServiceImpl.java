@@ -1,16 +1,18 @@
 package de.appsfactory.customerservice.customer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import de.appsfactory.customerservice.error.exception.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-@Component
+@Slf4j
+@Service
 public class CustomerServiceImpl implements CustomerService {
-
-    private final static Logger log = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
     private final CustomerRepository customerRepository;
 
@@ -19,40 +21,47 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer findUserByEmail(String email) {
-        Optional<Customer> user = Optional.ofNullable(customerRepository.findByEmail(email));
-        return user.orElse(null);
-    }
-
-    @Override
-    public Customer findCustomer(Long id) {
-        return customerRepository.getOne(id);
-    }
-
-    @Override
-    public List<Customer> allCustomers() {
-        return customerRepository.findAll();
-    }
-
-    @Override
-    public void createCustomer(Customer customer) {
-        customerRepository.saveAndFlush(customer);
-    }
-
-    @Override
-    public void updateCustomer(Customer customer) {
-        if (customer.getId() == null) {
-            log.error("customer id not found="+customer.toString());
-            throw new IllegalArgumentException("customer id not found");
+    public ResponseEntity<Customer> findUserByEmail(String email) {
+        Optional<Customer> customer = Optional.ofNullable(customerRepository.findByEmail(email));
+        if (customer.isPresent()) {
+            return ResponseEntity.ok(customer.get());
+        } else {
+            throw new EntityNotFoundException(Customer.class, "email", email);
         }
-        customerRepository.saveAndFlush(customer);
+    }
+
+    @Override
+    public ResponseEntity<Customer> findCustomer(Long id) {
+        return ResponseEntity.ok(customerRepository.getOne(id));
+    }
+
+    @Override
+    public ResponseEntity<List<Customer>> allCustomers() {
+        return ResponseEntity.ok(customerRepository.findAll());
+    }
+
+    @Override
+    public ResponseEntity<Customer> createCustomer(Customer customer) {
+        Customer savedCustomer = customerRepository.saveAndFlush(customer);
+        return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Customer> updateCustomer(Customer customer) {
+        Long id = customer.getId();
+        if (id == null || !customerRepository.existsById(id)) {
+            log.error("customer not found={}", customer);
+            throw new EntityNotFoundException(Customer.class, "id", Objects.toString(id));
+        }
+        Customer updatedCustomer = customerRepository.saveAndFlush(customer);
+        return ResponseEntity.ok(updatedCustomer);
     }
 
     @Override
     public void deleteCustomer(Long id) {
-        if (id == null) {
+        if (!customerRepository.existsById(id)) {
             log.error("id not found");
-            throw new IllegalArgumentException("id not found");
+            throw new EntityNotFoundException(Customer.class, "id", Objects.toString(id));
         }
         customerRepository.deleteById(id);
     }
