@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 public class EmailController {
@@ -18,9 +20,8 @@ public class EmailController {
     }
 
     @PostMapping("/sendEmail")
-    public String sendEmail(@RequestBody Email email){
-        log.debug("creating Customer={}"+email);
-        emailService.sendEmail(email);
-        return "Send successfully";
+    public Email sendEmail(@RequestBody @Valid Email email){
+        log.debug("creating Customer={}", email);
+        return emailService.sendEmail(email);
     }
 }

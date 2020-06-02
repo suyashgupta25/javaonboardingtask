@@ -1,6 +1,8 @@
 package de.appsfactory.customerservice.invoice;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,25 +18,26 @@ public class InvoiceController {
     }
 
     @RequestMapping(value = "/invoice/{id}", method = RequestMethod.GET)
-    public Invoice invoiceById(@PathVariable Long id) {
+    public ResponseEntity<Invoice> invoiceById(@PathVariable Long id) {
         log.debug("getting Invoice");
         return invoiceService.findInvoicesById(id);
     }
 
     @PostMapping("/invoice/{id}")
-    public Invoice createInvoice(@RequestBody @Valid Invoice invoice, @PathVariable Long id){
-        log.debug("creating Invoice={}"+invoice);
+    public ResponseEntity<Invoice> createInvoice(@RequestBody @Valid Invoice invoice, @PathVariable Long id) {
+        log.debug("creating Invoice={}", invoice);
         return invoiceService.createInvoice(id, invoice);
     }
 
-    @RequestMapping(value = "/invoice", method = RequestMethod.PUT)
-    public Invoice updateInvoice(@RequestBody @Valid Invoice invoice){
-        log.debug("updating Customer={}"+invoice);
+    @PutMapping(value = "/invoice")
+    public ResponseEntity<Invoice> updateInvoice(@RequestBody @Valid Invoice invoice) {
+        log.debug("updating Customer={}", invoice);
         return invoiceService.updateInvoice(invoice);
     }
 
-    @RequestMapping(value = "/invoice/{id}", method = RequestMethod.DELETE)
-    public void deleteInvoice(@PathVariable Long id){
+    @DeleteMapping(value = "/invoice/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteInvoice(@PathVariable Long id) {
         log.debug("deleting Customer");
         invoiceService.deleteInvoice(id);
     }

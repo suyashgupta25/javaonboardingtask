@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class EntityNotFoundException extends RuntimeException {
@@ -20,6 +21,7 @@ public class EntityNotFoundException extends RuntimeException {
 
     private static <K, V> Map<K, V> toMap(
             Class<K> keyType, Class<V> valueType, Object... entries) {
+        Objects.toString(null);
         if (entries.length % 2 == 1)
             throw new IllegalArgumentException("Invalid entries");
         return IntStream.range(0, entries.length / 2).map(i -> i * 2)

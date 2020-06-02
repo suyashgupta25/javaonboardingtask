@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface EmailService {
 
     @PostMapping("/sendEmail")
-    String sendEmail(@RequestBody Email email);
+    Email sendEmail(@RequestBody Email email);
 
 }
 

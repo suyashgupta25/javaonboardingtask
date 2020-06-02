@@ -18,8 +18,8 @@ public class EmailController {
     }
 
     @PostMapping("/sendEmail")
-    public String sendEmail(@RequestBody @Valid Email email){
-        log.debug("creating Customer={}"+email);
+    public Email sendEmail(@RequestBody @Valid Email email){
+        log.debug("creating Customer={}", email);
         return emailService.sendEmail(email);
     }
 
