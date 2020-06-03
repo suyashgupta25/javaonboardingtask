@@ -29,7 +29,6 @@ public class Invoice {
     @NonNull
     private String description;
 
-    @NonNull
     private float amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
