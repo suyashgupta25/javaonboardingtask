@@ -1,0 +1,18 @@
+server:
+    port: 8200
+spring:
+    application:
+        name: email-service
+    mail:
+        host: smtp.gmail.com
+        password: '****************'
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        transport:
+            protocol: smtp
+        username: '****.****@gmail.com'
