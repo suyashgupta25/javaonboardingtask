@@ -1,0 +1,25 @@
+feign:
+    hystrix:
+        enabled: true
+hystrix:
+    shareSecurityContext: true
+spring:
+    profiles: dev
+    application:
+        name: api-gateway
+zuul:
+    routes:
+        customer:
+            path: /customer/**
+            service-id: customer-service
+            strip-prefix: false
+        invoice:
+            path: /invoice/**
+            service-id: customer-service
+            strip-prefix: false
+        swagger2:
+            path: /swagger-ui.html
+            service-id: customer-service
+            strip-prefix: false
+    sensitive-headers: Cookie,Set-Cookie
+
