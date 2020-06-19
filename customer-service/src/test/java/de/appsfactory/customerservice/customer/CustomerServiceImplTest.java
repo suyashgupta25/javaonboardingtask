@@ -1,39 +1,28 @@
 package de.appsfactory.customerservice.customer;
 
+import de.appsfactory.customerservice.CustomerServiceApplication;
 import de.appsfactory.customerservice.util.DummyObjects;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static de.appsfactory.customerservice.util.DummyObjects.CUSTOMER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = CustomerServiceApplication.class)
 @RunWith(SpringRunner.class)
 public class CustomerServiceImplTest {
 
-    @TestConfiguration
-    static class CustomerServiceImplTestContextConfiguration {
-
-        @MockBean
-        private CustomerRepository repository;
-
-        @Bean
-        public CustomerService employeeService() {
-            customerRepository = repository;
-            return new CustomerServiceImpl(customerRepository);
-        }
-    }
-
     @Autowired
     private CustomerService customerService;
-    private static CustomerRepository customerRepository;
+
+    @MockBean
+    private CustomerRepository customerRepository;
 
     @Test
     public void whenValidEmail_thenCustomerShouldBeFound() {
@@ -43,10 +32,5 @@ public class CustomerServiceImplTest {
 
         ResponseEntity<Customer> found = customerService.findUserByEmail(CUSTOMER_EMAIL);
         assertThat(found.getBody().getEmail()).isEqualTo(CUSTOMER_EMAIL);
-    }
-
-    @AfterAll
-    static void clear() {
-        customerRepository = null;
     }
 }

@@ -12,6 +12,7 @@
         <module>api-gateway</module>
         <module>customer-service</module>
         <module>email-service</module>
+        <module>country-parser</module>
     </modules>
 
 </project>

@@ -2,10 +2,8 @@ package de.appsfactory.customerservice.email;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 public class Email {
 
     @NonNull
