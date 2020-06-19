@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfig {
 
-    @Bean(name = "countryFactory")
+    @Bean(name = "countryRepoFactory")
     public CountryRepoFactory countryFactory() {
         CountryRepoFactory factory = new CountryRepoFactory();
         factory.setCountryRepository(new CountryH2Repository());

@@ -17,10 +17,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = CountryParserApplication.class)
 @RunWith(SpringRunner.class)
@@ -41,30 +45,31 @@ public class CountryH2RepositoryTest {
 
     @Test
     public void whenGetAllCountries_thenCountriesShouldBeFetched() {
-        Country country = DummyObjects.getCountry();
-        List<Country> countryList = Arrays.asList(country);
-        doReturn(countryList).when(countryJpaRepository).findAll();
+        CountryEntity countryEntity = DummyObjects.getCountryEntity();
+        List<CountryEntity> countryEntityList = Arrays.asList(countryEntity);
+        doReturn(countryEntityList).when(countryJpaRepository).findAll();
 
         List<Country> found = countryH2Repository.getAllCountries();
         assertNotNull(found);
-        assertEquals(found.size(), countryList.size());
+        assertEquals(found.size(), countryEntityList.size());
     }
 
     @Test
     public void whenGetCountry_thenCountryShouldBeFetched() {
-        Country country = DummyObjects.getCountry();
+        CountryEntity countryEntity = DummyObjects.getCountryEntity();
         Mockito.when(countryJpaRepository.findById(anyLong()))
-                .thenReturn(Optional.of(country));
+                .thenReturn(Optional.of(countryEntity));
 
-        Optional<Country> found = countryH2Repository.getCountryById(country.getId());
+        Optional<Country> found = countryH2Repository.getCountryById(countryEntity.getId());
         assertTrue(found.isPresent());
-        assertEquals(found.get().getNameEN(), country.getNameEN());
+        assertEquals(found.get().getNameEN(), countryEntity.getNameEN());
     }
 
     @Test
     public void whenAddCountry_thenCountryShouldBeAdded() {
         Country country = DummyObjects.getCountry();
-        doReturn(country).when(countryJpaRepository).saveAndFlush(any(Country.class));
+        CountryEntity countryEntity = DummyObjects.getCountryEntity();
+        doReturn(countryEntity).when(countryJpaRepository).saveAndFlush(any(CountryEntity.class));
 
         Country found = countryH2Repository.saveOrUpdateCountry(country);
         assertNotNull(found);
@@ -81,7 +86,11 @@ public class CountryH2RepositoryTest {
     public void whenSaveAllCountries_thenCountriesShouldBeAdded() {
         Country country = DummyObjects.getCountry();
         List<Country> countryList = Arrays.asList(country);
-        doReturn(countryList).when(countryJpaRepository).saveAll(anyList());
+
+        CountryEntity countryEntity = DummyObjects.getCountryEntity();
+        List<CountryEntity> countryEntityList = Arrays.asList(countryEntity);
+
+        doReturn(countryEntityList).when(countryJpaRepository).saveAll(anyList());
 
         List<Country> found = countryH2Repository.saveAllCountries(countryList);
         assertNotNull(found);
