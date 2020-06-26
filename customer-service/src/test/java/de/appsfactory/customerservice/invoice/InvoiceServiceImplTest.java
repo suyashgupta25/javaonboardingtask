@@ -1,17 +1,18 @@
 package de.appsfactory.customerservice.invoice;
 
+import de.appsfactory.customerservice.CustomerServiceApplication;
 import de.appsfactory.customerservice.customer.Customer;
 import de.appsfactory.customerservice.customer.CustomerRepository;
 import de.appsfactory.customerservice.util.DummyObjects;
 import de.appsfactory.customerservice.utils.NullAwareBeansUtil;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,35 +24,29 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = CustomerServiceApplication.class)
 @RunWith(SpringRunner.class)
 public class InvoiceServiceImplTest {
 
-    @TestConfiguration
-    static class InvoiceServiceImplTestContextConfiguration {
+    @MockBean
+    private InvoiceRepository invoiceRepository;
 
-        @MockBean
-        private InvoiceRepository repository;
+    @MockBean
+    private CustomerRepository customerRepository;
 
-        @MockBean
-        private CustomerRepository mockCustomerRepository;
-
-        @MockBean
-        private NullAwareBeansUtil<Invoice> mockInvoiceNullAwareBeansUtil;
-
-        @Bean
-        public InvoiceService employeeService() {
-            invoiceRepository = repository;
-            customerRepository = mockCustomerRepository;
-            invoiceNullAwareBeansUtil = mockInvoiceNullAwareBeansUtil;
-            return new InvoiceServiceImpl(invoiceRepository, mockCustomerRepository, mockInvoiceNullAwareBeansUtil);
-        }
-    }
+    @MockBean
+    private NullAwareBeansUtil<Invoice> invoiceNullAwareBeansUtil;
 
     @Autowired
     private InvoiceService invoiceService;
-    private static InvoiceRepository invoiceRepository;
-    private static CustomerRepository customerRepository;
-    private static NullAwareBeansUtil<Invoice> invoiceNullAwareBeansUtil;
+
+    @Before
+    public void setUp() {
+        Assert.assertNotNull("invoiceService is not set", invoiceService);
+        Assert.assertNotNull("invoiceRepository is not set", invoiceRepository);
+        Assert.assertNotNull("customerRepository is not set", customerRepository);
+        Assert.assertNotNull("invoiceNullAwareBeansUtil is not set", invoiceNullAwareBeansUtil);
+    }
 
     @Test
     public void whenFindInvoiceById_thenInvoiceShouldBeFound() {
@@ -83,11 +78,4 @@ public class InvoiceServiceImplTest {
         ResponseEntity<Invoice> found = invoiceService.updateInvoice(invoice);
         assertThat(found.getBody().getTitle()).isEqualTo(INVOICE_TITLE);
     }
-
-    @AfterAll
-    static void clear() {
-        customerRepository = null;
-        invoiceRepository = null;
-    }
-
 }

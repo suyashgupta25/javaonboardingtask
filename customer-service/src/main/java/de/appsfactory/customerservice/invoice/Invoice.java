@@ -10,12 +10,9 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "INVOICE")
-@ToString
 @JsonIgnoreProperties({"customer"})
 public class Invoice {
 

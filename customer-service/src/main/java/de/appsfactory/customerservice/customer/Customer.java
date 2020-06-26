@@ -8,12 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "CUSTOMER")
-@ToString
 public class Customer {
 
     @Id
