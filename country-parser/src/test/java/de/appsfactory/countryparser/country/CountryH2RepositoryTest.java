@@ -77,7 +77,7 @@ public class CountryH2RepositoryTest {
     }
 
     @Test
-    public void whenDeleteCountry_thenCountryShouldBeDeeleted() {
+    public void whenDeleteCountry_thenCountryShouldBeDeleted() {
         doNothing().when(countryJpaRepository).deleteById(anyLong());
         countryH2Repository.deleteCountry(1L);
     }

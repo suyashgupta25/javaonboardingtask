@@ -1,4 +1,4 @@
-package de.appsfactory.ddd.persistence;
+package de.appsfactory.ddd.adapter.persistence;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.util.Calendar;
+import java.util.Date;
 
 @Entity
 @Table(name = "USER")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserJpaEntity {
+class UserJpaEntity {
 
     @Id
     @GeneratedValue
@@ -27,7 +27,7 @@ public class UserJpaEntity {
 
     @NonNull
     @Temporal(TemporalType.DATE)
-    private Calendar dob;
+    private Date dob;
 
     @NonNull
     private String address1;

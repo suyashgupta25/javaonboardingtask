@@ -1,4 +1,4 @@
-package de.appsfactory.ddd.domain;
+package de.appsfactory.ddd.domain.user;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -14,7 +14,7 @@ public class UserPostalCode {
     @Pattern(regexp = "^[A-Za-z0-9]+$")
     private String postcode;
 
-    public static UserPostalCode of(String code) {
+    public static UserPostalCode from(String code) {
         return new UserPostalCode(code);
     }
 }
